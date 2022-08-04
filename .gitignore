@@ -1,0 +1,38 @@
+# non-project files to ignore
+*.bat
+*.ipynb
+*.jpg
+*.log
+*.p
+*.pdf
+*.pptx
+*.png
+*.pptx
+*.pyc
+*.tmp
+*.txt
+*.xlsx
+tmp*.*
+*.old*
+*~*
+*.sav*
+Thumbs.db
+
+# config files (may have sensitive data)
+*.ini
+
+# jupyter notebook and checkpoint files
+.ipynb_checkpoints/
+
+# archive and tmp folder files
+archive/
+tmp*/
+snapshot*/
+
+# streamlit secrets
+.streamlit
+
+# override
+!requirements.txt
+!Prototype the lastseen app.ipynb
+!images/*.jpg
