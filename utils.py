@@ -5,6 +5,7 @@ utils.py: catmon_lastseen_app helper functions
 
 from collections import OrderedDict
 from io import BytesIO
+from zoneinfo import ZoneInfo
 import datetime as dt
 import math
 
@@ -76,11 +77,18 @@ def ordinal(date_int):
 def get_friendly_lastseen_date(image_date_str):
     """Return a friendly date string.
 
-    e.g. today at 17:30
-    yesterday at 04:30
-    Sunday 17th July at 05:00"""
+    Input image_date_str format is '%Y-%m-%d_%H%M%S'
+    Output is a friendly date string:
+        e.g. today at 17:30 - 2.0 hours ago
+        yesterday at 04:30 - 24.0 hours ago
+        Sunday 17th July at 05:00 - 72.0 hours ago 
+    """
+    CATMON_TIMEZONE = 'Europe/London'
     img_dt = dt.datetime.strptime(image_date_str, "%Y-%m-%d_%H%M%S")
-    hours_ago = (dt.datetime.today() - img_dt).total_seconds()/(60*60)
+    img_dt = img_dt.replace(tzinfo=ZoneInfo(CATMON_TIMEZONE))
+    now_dt = dt.datetime.now(ZoneInfo(CATMON_TIMEZONE))
+    hours_ago = (now_dt - img_dt).total_seconds()/(60*60)
+    
     if img_dt.date() == dt.datetime.today().date():
         friendly_date_str = (
             f"today at {img_dt.time().strftime('%H:%M')} "
