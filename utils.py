@@ -81,14 +81,14 @@ def get_friendly_lastseen_date(image_date_str):
     Output is a friendly date string:
         e.g. today at 17:30 - 2.0 hours ago
         yesterday at 04:30 - 24.0 hours ago
-        Sunday 17th July at 05:00 - 72.0 hours ago 
+        Sunday 17th July at 05:00 - 72.0 hours ago
     """
     CATMON_TIMEZONE = 'Europe/London'
     img_dt = dt.datetime.strptime(image_date_str, "%Y-%m-%d_%H%M%S")
     img_dt = img_dt.replace(tzinfo=ZoneInfo(CATMON_TIMEZONE))
     now_dt = dt.datetime.now(ZoneInfo(CATMON_TIMEZONE))
     hours_ago = (now_dt - img_dt).total_seconds()/(60*60)
-    
+
     if img_dt.date() == dt.datetime.today().date():
         friendly_date_str = (
             f"today at {img_dt.time().strftime('%H:%M')} "
@@ -128,7 +128,7 @@ def get_image_brightness(pil_image):
     return math.sqrt(R_CONST*(r**2) + G_CONST*(g**2) + B_CONST*(b**2))
 
 # https://pythonexamples.org/python-pillow-adjust-image-brightness/
-def enhance_image(pil_image, factor=1.8):
+def enhance_image(pil_image, factor=2.0):
     """Return enhanced pil image.
 
     This is particularly useful for some of the darker, night-time images."""
@@ -216,3 +216,9 @@ def resize(img, max_width=300):
     ratio = max_width/width
     new_img = img.resize((int(width*ratio), int(height*ratio)))
     return new_img
+
+def read_file_str(filename):
+    """Read the file and return as a string."""
+    with open(filename, "r", encoding="utf-8") as f:
+        file_str = f.read()
+    return file_str

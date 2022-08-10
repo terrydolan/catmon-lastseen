@@ -113,10 +113,17 @@ else:
 
 # show the associated images
 if images:
-    st.subheader("Images")
+    st.markdown("**Latest cat images**")
     cols = st.columns(len(images), gap='small')
     for idx, col in enumerate(cols):
         with col:
             st.image(images[idx], captions[idx])
 
 st.write("[@boosimba twitter account](https://twitter.com/boosimba)")
+st.write("  ")
+
+# Show info about the app
+with st.expander("Show the app's readme (from github)"):
+    ABOUT_MD_STR = utils.read_file_str('README.md')
+    st.markdown(ABOUT_MD_STR, unsafe_allow_html=True)
+    
