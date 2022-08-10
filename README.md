@@ -21,7 +21,7 @@ functions in 'utils.py'.
 
 ## Catmon Last Seen Output
 Here is an example of the app's output:  
-<img src="https://raw.githubusercontent.com/terrydolan/catmon-img-classifier/main/images/catmon_lastseen_example_2022-08-10_111800.jpg" 
+<img src="https://raw.githubusercontent.com/terrydolan/catmon-lastseen/main/images/catmon_lastseen_example_2022-08-10_111800.jpg" 
 width="300">
 
 ## Related Catmon Projects
