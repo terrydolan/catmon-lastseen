@@ -15,6 +15,8 @@ To run:
 
 History
 v0.1.0 - Aug 2022, First version
+v0.2.0 - June 2023, Update to handle situation where catmonic not running;
+         Update to use latest version of streamlit
 """
 
 import streamlit as st
@@ -26,8 +28,8 @@ __copyright__ = "Terry Dolan"
 __license__ = "MIT"
 __email__ = "terry8dolan@gmail.com"
 __status__ = "Beta"
-__version__ = "0.1.0"
-__updated__ = "August 2022"
+__version__ = "0.2.0"
+__updated__ = "June 2023"
 
 
 # configure streamlit page
@@ -48,8 +50,22 @@ api = tweepy.API(auth)
 # the cat images) and and the replies from the catmon image classifier (with
 # the cat label)
 tweet_d, tweet_reply_d = utils.parse_catmon_tweets(api)
-assert len(tweet_d) != 0, "unexpected error, tweet_d is empty"
-assert len(tweet_reply_d) != 0, "unexpected error, tweet_reply_d is empty"
+
+# check the dictionaries
+if not tweet_d:
+    st.error("Unexpected error: no @boosimba catmon tweets found")
+    st.stop()
+if not tweet_reply_d:
+    st.info("""
+        No catmon image classifications found on @boosimba catmon tweets, 
+        check catmonic is running.  
+        Therefore only the latest catmon image will be shown, classified 
+        as 'unknown'.
+        """)
+    # st.stop()
+
+# assert len(tweet_d) != 0, "unexpected error, tweet_d is empty"
+# assert len(tweet_reply_d) != 0, "unexpected error, tweet_reply_d is empty"
 
 
 # process the tweet dictionaries obtain the 'last seen' data
