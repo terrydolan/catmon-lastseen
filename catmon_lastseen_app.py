@@ -17,6 +17,7 @@ History
 v0.1.0 - Aug 2022, First version
 v0.2.0 - June 2023, Update to handle situation where catmonic not running;
          Update to use latest version of streamlit
+v0.3.0 - Oct 2023, Update to handle situation where forbidden from reading catmon tweets
 """
 
 import streamlit as st
@@ -28,28 +29,32 @@ __copyright__ = "Terry Dolan"
 __license__ = "MIT"
 __email__ = "terry8dolan@gmail.com"
 __status__ = "Beta"
-__version__ = "0.2.0"
-__updated__ = "June 2023"
+__version__ = "0.3.0"
+__updated__ = "October 2023"
 
 
 # configure streamlit page
 st.set_page_config(
     page_title="catmon_lastseen_app", page_icon=":cat:", layout="centered",
     initial_sidebar_state="auto", menu_items={
-    'About': "Catmon Last Seen App"
+        'About': "Catmon Last Seen App"
     }
 )
 
 st.title("Catmon Last Seen App")
 
-# instantiate the twitter api
+# instantiate the Twitter api
 auth = tweepy.OAuth1UserHandler(**st.secrets.twitter_auth_info)
 api = tweepy.API(auth)
 
 # create the two tweet dictionaries containing the catmon auto-tweets (with
-# the cat images) and and the replies from the catmon image classifier (with
+# the cat images) and the replies from the catmon image classifier (with
 # the cat label)
-tweet_d, tweet_reply_d = utils.parse_catmon_tweets(api)
+try:
+    tweet_d, tweet_reply_d = utils.parse_catmon_tweets(api)
+except tweepy.errors.Forbidden:
+    st.error('Unexpected error: forbidden from reading catmon tweets')
+    st.stop()
 
 # check the dictionaries
 if not tweet_d:

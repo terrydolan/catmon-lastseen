@@ -21,6 +21,10 @@ Thumbs.db
 # config files (may have sensitive data)
 *.ini
 
+# IDE, pycharm
+.idea/
+/.idea
+
 # jupyter notebook and checkpoint files
 .ipynb_checkpoints/
 
