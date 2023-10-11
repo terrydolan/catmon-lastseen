@@ -21,7 +21,7 @@ Thumbs.db
 # config files (may have sensitive data)
 *.ini
 
-# IDE, pycharm
+# IDE, pycharm 
 .idea/
 /.idea
 

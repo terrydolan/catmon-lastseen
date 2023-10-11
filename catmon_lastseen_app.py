@@ -4,24 +4,22 @@ Catmon Last Seen App
 
 The web app shows when Boo or Simba were last seen.
 
-The app parses the @boosimba catmon tweets, which include the cat images from
-catmon, and the replies from the catmon image classifier that categorises
-the cat image as Boo, Simba or Unknown.
-
-The associated images are enhanced and displayed.
+The app reads the latest cat image files from Google Drive, parses the filename to determine when the cat
+was last seen, and displays the last seen information and the latest image.
 
 To run:
     $streamlit run catmon_lastseen_app.py
 
 History
-v0.1.0 - Aug 2022, First version
-v0.2.0 - June 2023, Update to handle situation where catmonic not running;
+v0.1.0 - Aug 2022, First version; parses the @boosimba catmon tweets
+v0.2.0 - June 2023, Update to handle situation where catmonic image classifier not running;
          Update to use latest version of streamlit
-v0.3.0 - Oct 2023, Update to handle situation where forbidden from reading catmon tweets
+v0.3.0 - Oct 2023, Update to handle situation where app is forbidden from reading catmon tweets
+v0.4.0 - Oct 2023, Read catmon images from private Google Drive account instead of public Twitter account,
+         as Twitter free access no longer includes read access to tweets
 """
 
 import streamlit as st
-import tweepy
 import utils
 
 __author__ = "Terry Dolan"
@@ -29,122 +27,67 @@ __copyright__ = "Terry Dolan"
 __license__ = "MIT"
 __email__ = "terry8dolan@gmail.com"
 __status__ = "Beta"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __updated__ = "October 2023"
 
-
-# configure streamlit page
+# configure streamlit page and set title
 st.set_page_config(
     page_title="catmon_lastseen_app", page_icon=":cat:", layout="centered",
-    initial_sidebar_state="auto", menu_items={
-        'About': "Catmon Last Seen App"
-    }
-)
-
+    initial_sidebar_state="auto", menu_items={'About': "Catmon Last Seen App"})
 st.title("Catmon Last Seen App")
 
-# instantiate the Twitter api
-auth = tweepy.OAuth1UserHandler(**st.secrets.twitter_auth_info)
-api = tweepy.API(auth)
+# connect to Google Drive
+drive_service = utils.gdrive_connect()
 
-# create the two tweet dictionaries containing the catmon auto-tweets (with
-# the cat images) and the replies from the catmon image classifier (with
-# the cat label)
-try:
-    tweet_d, tweet_reply_d = utils.parse_catmon_tweets(api)
-except tweepy.errors.Forbidden:
-    st.error('Unexpected error: forbidden from reading catmon tweets')
-    st.stop()
+# get latest Boo image and filename from Boo folder
+boo_img_obj, boo_img_name = utils.gdrive_get_most_recent_image(
+    drive_service=drive_service,
+    folder_id=st.secrets["BOO_IMAGES_FOLDER_ID"])
 
-# check the dictionaries
-if not tweet_d:
-    st.error("Unexpected error: no @boosimba catmon tweets found")
-    st.stop()
-if not tweet_reply_d:
-    st.info("""
-        No catmon image classifications found on @boosimba catmon tweets, 
-        check catmonic is running.  
-        Therefore only the latest catmon image will be shown, classified 
-        as 'unknown'.
-        """)
-    # st.stop()
+# report when Boo was last seen
+boo_img_date_str = boo_img_name.split('.')[0]
+boo_lastseen = utils.get_friendly_lastseen_date(image_date_str=boo_img_date_str)
+st.write(f"Boo, aka Fluff Bag!, was last seen {boo_lastseen}")
 
-# assert len(tweet_d) != 0, "unexpected error, tweet_d is empty"
-# assert len(tweet_reply_d) != 0, "unexpected error, tweet_reply_d is empty"
+# prepare the Boo image and caption, ready to display
+boo_img_obj_enh = utils.resize(utils.enhance_image(boo_img_obj))
+boo_img_caption = f"Boo ({boo_img_name})"
 
+# get latest Simba image and filename from Simba folder
+simba_img_obj, simba_img_name = utils.gdrive_get_most_recent_image(
+    drive_service=drive_service,
+    folder_id=st.secrets["SIMBA_IMAGES_FOLDER_ID"])
 
-# process the tweet dictionaries obtain the 'last seen' data
-last_seen_d = utils.get_last_seen(tweet_d, tweet_reply_d)
+# report when Simba was last seen
+simba_img_date_str = simba_img_name.split('.')[0]
+simba_lastseen = utils.get_friendly_lastseen_date(image_date_str=simba_img_date_str)
+st.write(f"Simba, aka Mr Handsome!, was last seen {simba_lastseen}")
 
-# show the last seen info
-found_boo = True if 'boo' in last_seen_d else False
-found_simba = True if 'simba' in last_seen_d else False
-images = []
-captions = []
+# prepare the Simba image and caption, ready to display
+simba_img_obj_enh = utils.resize(utils.enhance_image(simba_img_obj))
+simba_img_caption = f"Simba ({simba_img_name})"
 
-# test different UI scenarios with a variable number of images
-# st.write(last_seen_d) # normally 2 images; can be 0 to 3 images
-# del(last_seen_d['boo']); found_boo = False # reduce to 1 image
-# del(last_seen_d['simba']); found_simba= False # reduce to 1 image
-# last_seen_d["unknown"] = ("2022-08-03_045303.jpg",
-#                           "http://pbs.twimg.com/media/FZNSPVEXgAIvWni.jpg");\
-#                             # add extra image
-# last_seen_d = [] # remove all images
+# show the enhanced images and captions
+st.markdown("***")
+st.markdown("**Latest cat images**")
+col1, col2 = st.columns(2, gap='small')
 
-if last_seen_d:
-    for label, (image_fname, image_url) in last_seen_d.items():
-        img_date_str = image_fname.split('.')[0]
-        friendly_lastseen_date = utils.get_friendly_lastseen_date(img_date_str)
-        if label == "boo":
-            label_enh = "Boo (aka Fluffbag)"
-        elif label == "simba":
-            label_enh = "Simba (aka Mr. Handsome)"
-        elif label == "unknown":
-            label_enh = "Unknown (aka the cat of mystery)"
-        else:
-            raise ValueError("label is not 'boo', 'simba' or 'unknown")
-        st.write((
-            f"{label_enh} was last seen {friendly_lastseen_date}"
-            ))
+with col1:
+    st.image(boo_img_obj_enh, boo_img_caption)
 
-        # download the associated image and enhance (given that some are dark)
-        img = utils.image_download(image_url)
-        img_enh = utils.resize(utils.enhance_image(img))
-        images.append(img_enh)
-        captions.append(f"{label} ({image_fname})")
-    st.markdown("***")
+with col2:
+    st.image(simba_img_obj_enh, simba_img_caption)
 
-# report if Boo and/or Simba not found
-if not found_simba and not found_boo:
-    st.write(
-        f"Could not find Boo or Simba in last {len(tweet_d)} "
-        f"tweets from @boosimba"
-        )
-else:
-    if not found_boo:
-        st.write(
-            f"Could not find Boo in last {len(tweet_d)} "
-            f"tweets from @boosimba"
-        )
-    if not found_simba:
-        st.write(
-            f"Could not find Simba in last {len(tweet_d)} "
-            f"tweets from @boosimba"
-            )
-
-# show the associated images
-if images:
-    st.markdown("**Latest cat images**")
-    cols = st.columns(len(images), gap='small')
-    for idx, col in enumerate(cols):
-        with col:
-            st.image(images[idx], captions[idx])
-
-st.write("[@boosimba twitter account](https://twitter.com/boosimba)")
+# show additional information
 st.write("  ")
+addl_info = st.checkbox("Additional Information")
 
-# Show info about the app
-with st.expander("Show the app's readme (from github)"):
-    ABOUT_MD_STR = utils.read_file_str('README.md')
-    st.markdown(ABOUT_MD_STR, unsafe_allow_html=True)
-    
+if addl_info:
+    # show link to boosimba Twitter account
+    st.write("[@boosimba Twitter account](https://twitter.com/boosimba)")
+
+    # show link to GitHub repo and option to show readme file
+    st.write("[Catmon Last Seen GitHub repo](https://github.com/terrydolan/catmon-lastseen)")
+    with st.expander("Show the app's readme (from GitHub)"):
+        ABOUT_MD_STR = utils.read_file_str('README.md')
+        st.markdown(ABOUT_MD_STR, unsafe_allow_html=True)

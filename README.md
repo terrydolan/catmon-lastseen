@@ -2,16 +2,12 @@
 
 ## Introduction
 The *Catmon Last Seen* web app shows when Boo or Simba were last seen.
-Boo and Simba are two cool cats with a twitter account!
+Boo and Simba are two cool cats with a Twitter account and a Google Drive account!
 
-The app parses the [@boosimba tweets](https://twitter.com/boosimba), which show
-the auto-tweets from *Catmon* with the cat's image, and the tweet replies from
-the *Catmon Image Classifier* with the cat's name.
+The app reads the latest cat image files from Google Drive, parses the filename to determine 
+when the cat was last seen, and displays the 'last seen' information and the latest image.
 
-The app reports the time each cat was last seen and displays the associated cat
-images.
-
-The app is built using python, streamlit, tweepy, requests and PIL.
+The app is built using python, streamlit, PIL and google-api-python-client.
 
 ## Key Project Files
 The 'catmon\_lastseen\_app.py' is the main python application, with helper
@@ -29,21 +25,21 @@ width="300">
 1. *Catmon*: a cat flap monitor application that takes a picture when a cat
 enters through the cat flap, tweets it on @boosimba and uploads the image
 to google drive.
-The application has been running since 2015 on a raspberry pi model B rev 2.  
+The application has been running since 2015. 
+It was recently ported to a raspberrypi 3b+ and enhanced to include the 
+catmon image classifier (see below). 
 [Catmon repo](https://github.com/terrydolan/catmon)  
 2. *Catmon Image Tagger*: a web app that provides a UI to help tag a set of
 catmon images as either 'Boo' or 'Simba' or 'Unknown'.
-The results are saved to google drive.  
+The results are saved to Google Drive.  
 [Catmon Image Tagger repo](https://github.com/terrydolan/catmon-img-tag)  
-3. *Catmon Image Classifier*: an application that processes the new catmon
-tweets and classifies the associated image as 'Boo', 'Simba' or 'Unknown'
-using a trained MobileNetV2 convolutional neural network (CNN).
-The image classification is tweeted as a reply to the *Catmon* tweet.
+3. *Catmon Image Classifier*: an application that classifies a catmon image 
+as 'Boo', 'Simba' or 'Unknown' using a trained MobileNetV2 convolutional neural network (CNN).
 The MobileNetV2 model applies transfer learning and was trained, validated and
 tested  using the tagged catmon images.
 MobileNetV2 was selected because it has a small 'footprint', allowing the
 application to be deployed on a raspberry pi.  
 [Catmon Image Classifier repo](https://github.com/terrydolan/catmon-img-classifier)  
-
+    
 Terry Dolan  
-August 2022
+October 2023
