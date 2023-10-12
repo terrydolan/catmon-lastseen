@@ -17,6 +17,7 @@ v0.2.0 - June 2023, Update to handle situation where catmonic image classifier n
 v0.3.0 - Oct 2023, Update to handle situation where app is forbidden from reading catmon tweets
 v0.4.0 - Oct 2023, Read catmon images from private Google Drive account instead of public Twitter account,
          as Twitter free access no longer includes read access to tweets
+v0.5.0 - Oct 2023, Show the link to @boosimba Twitter account under the latest cat images
 """
 
 import streamlit as st
@@ -27,7 +28,7 @@ __copyright__ = "Terry Dolan"
 __license__ = "MIT"
 __email__ = "terry8dolan@gmail.com"
 __status__ = "Beta"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __updated__ = "October 2023"
 
 # configure streamlit page and set title
@@ -78,16 +79,17 @@ with col1:
 with col2:
     st.image(simba_img_obj_enh, simba_img_caption)
 
+# show link to boosimba Twitter account
+st.write("You can see more catmon images on the [@boosimba Twitter account](https://twitter.com/boosimba)")
+
 # show additional information
 st.write("  ")
 addl_info = st.checkbox("Additional Information")
 
 if addl_info:
-    # show link to boosimba Twitter account
-    st.write("[@boosimba Twitter account](https://twitter.com/boosimba)")
 
     # show link to GitHub repo and option to show readme file
-    st.write("[Catmon Last Seen GitHub repo](https://github.com/terrydolan/catmon-lastseen)")
+    st.write("[Catmon Last Seen app's GitHub repo](https://github.com/terrydolan/catmon-lastseen)")
     with st.expander("Show the app's readme (from GitHub)"):
         ABOUT_MD_STR = utils.read_file_str('README.md')
         st.markdown(ABOUT_MD_STR, unsafe_allow_html=True)

@@ -17,7 +17,7 @@ functions in 'utils.py'.
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/terrydolan/catmon-lastseen/main/catmon_lastseen_app.py)
 
 ## Catmon Last Seen Output
-Here is an example of the app's output:  
+Here is an example of the app's original output:  
 <img src="https://raw.githubusercontent.com/terrydolan/catmon-lastseen/main/images/catmon_lastseen_example_2022-08-10_142300.jpg"
 width="300">
 
@@ -27,7 +27,9 @@ enters through the cat flap, tweets it on @boosimba and uploads the image
 to google drive.
 The application has been running since 2015. 
 It was recently ported to a raspberrypi 3b+ and enhanced to include the 
-catmon image classifier (see below). 
+catmon image classifier (catmonic, see below).  
+The app now uses catmonic to try and identify the cat, tweets the identity and automatically 
+places the image in a folder for that cat on Google Drive.   
 [Catmon repo](https://github.com/terrydolan/catmon)  
 2. *Catmon Image Tagger*: a web app that provides a UI to help tag a set of
 catmon images as either 'Boo' or 'Simba' or 'Unknown'.
@@ -40,6 +42,6 @@ tested  using the tagged catmon images.
 MobileNetV2 was selected because it has a small 'footprint', allowing the
 application to be deployed on a raspberry pi.  
 [Catmon Image Classifier repo](https://github.com/terrydolan/catmon-img-classifier)  
-    
+  
 Terry Dolan  
 October 2023
