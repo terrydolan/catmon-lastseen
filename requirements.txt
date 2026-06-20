@@ -1,6 +1,7 @@
+# Python 3.10.14
 google-api-python-client==2.102.0
 google-auth-httplib2==0.1.1
 google-auth==2.23.3
-Pillow==9.0.1
+Pillow==9.5.0  # was 9.0.1
 streamlit==1.23.1
-
+protobuf==4.25.9  # explicit

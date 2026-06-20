@@ -18,6 +18,11 @@ v0.3.0 - Oct 2023, Update to handle situation where app is forbidden from readin
 v0.4.0 - Oct 2023, Read catmon images from private Google Drive account instead of public Twitter account,
          as Twitter free access no longer includes read access to tweets
 v0.5.0 - Oct 2023, Show the link to @boosimba Twitter account under the latest cat images
+v0.6.0 - Jun 2026, Show the link to @boosimba BlueSky account under the latest cat images
+
+ToDo:
+1. investigate occasional "SSLError: [SSL] record layer failure", fixed with a refresh
+
 """
 
 import streamlit as st
@@ -28,8 +33,8 @@ __copyright__ = "Terry Dolan"
 __license__ = "MIT"
 __email__ = "terry8dolan@gmail.com"
 __status__ = "Beta"
-__version__ = "0.5.0"
-__updated__ = "October 2023"
+__version__ = "0.6.0"
+__updated__ = "June 2026"
 
 # configure streamlit page and set title
 st.set_page_config(
@@ -80,7 +85,7 @@ with col2:
     st.image(simba_img_obj_enh, simba_img_caption)
 
 # show link to boosimba Twitter account
-st.write("You can see more catmon images on the [@boosimba Twitter account](https://twitter.com/boosimba)")
+st.write("You can see more catmon images on the [@boosimba Bluesky account](https://bsky.app/profile/boosimba.bsky.social)")
 
 # show additional information
 st.write("  ")
